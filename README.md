@@ -14,4 +14,4 @@ An AI-powered system that scrapes job postings, stores them in a vector database
 - FastAPI
 - Vector DBs: FAISS / Chroma / AstraDB
 - AWS (EC2, S3)
-- Docke
+- Docker

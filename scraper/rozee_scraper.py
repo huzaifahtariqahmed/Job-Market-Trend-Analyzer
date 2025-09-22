@@ -121,4 +121,4 @@ def collect_jobs(n_pages=3, output_file="data/rozee_jobs.json"):
 
 if __name__ == "__main__":
     no_of_pages = 1  
-    collect_jobs(n_pages=no_of_pages)  # scrape first 3 pages (~60 jobs)
+    collect_jobs(n_pages=no_of_pages)

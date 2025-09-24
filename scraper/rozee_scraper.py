@@ -35,12 +35,6 @@ def scrape_job_links(url):
     return list(set(job_links))
 
 def scrape_n_pages(n_pages=5, jobs_per_page=20):
-    """
-    Scrape multiple pages of job listings from Rozee.
-
-    n_pages: number of listing pages to scrape (default 5)
-    jobs_per_page: how many jobs per page (Rozee uses 20)
-    """
     all_links = []
     for i in range(n_pages):
         offset = i * jobs_per_page
@@ -55,11 +49,23 @@ def scrape_n_pages(n_pages=5, jobs_per_page=20):
 def scrape_job_detail(page, url):
     page.goto(url, timeout=60000, wait_until="domcontentloaded")
 
-    # Title
+    # --- Title ---
     title = page.title()
 
-    # Summary
-    summary = page.locator("meta[name='description']").get_attribute("content")
+    # --- Job Description (full text instead of summary) ---
+    description = None
+    possible_selectors = [
+        "div.jbody",
+        "div.job-dtl",
+        "div.job-detail",
+        "div.job-dtl.clearfix"
+    ]
+    for selector in possible_selectors:
+        desc_div = page.locator(selector)
+        if desc_div.count() > 0:
+            description = desc_div.first.inner_text().strip()
+            if description:
+                break
 
     # --- Meta Keywords Fallback ---
     keywords = page.locator("meta[name='keywords']").get_attribute("content") or ""
@@ -86,7 +92,7 @@ def scrape_job_detail(page, url):
         "job_id": job_id,
         "url": url,
         "title": title,
-        "summary": summary,
+        "description": description,   # <-- full description here
         "company": company,
         "location": location,
         "industry": industry,
